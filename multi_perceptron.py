@@ -15,14 +15,13 @@ class Perceptron:
 
     def forward(self, X):
         activation = np.dot(X, self.W)
-        
         return sigmoid_activation(activation)
     
     def fit(self, X, y):
         for epoch in range(self.epochs):
             for input, label in zip(X, y):
                 pred = self.forward(input)
-                error = y - pred
+                error = label - pred
                 self.W += -self.learning_rate * error * input
 
     def predict(self, X):
