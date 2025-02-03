@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from multi_perceptron import Perceptron
+from multi_perceptron import MultiPerceptron
 
 
 data = pd.read_csv('Iris.csv')
@@ -17,7 +17,7 @@ y = LabelEncoder().fit_transform(y)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-P = Perceptron(X_train.shape[1], lr=0.01, epochs=10)
+P = MultiPerceptron(X_train.shape[1], lr=0.01, epochs=10)
 P.fit(X_train, y_train)
 
 predictions = P.predict(X_test)

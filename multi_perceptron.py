@@ -7,33 +7,40 @@ def relu_activation(X):
     return np.maximum(0, X)
 
 def softmax_activation(X):
-    return np.exp(X) / np.sum(np.exp(X), axis=0)
+    exp_X = np.exp(X - np.max(X, axis=0, keepdims=True))  
+    return exp_X / np.sum(exp_X, axis=0, keepdims=True)
 
 def threshold(X):
     return np.where(X >= 0.5, 1, 0)
 
-class Perceptron:
+class MultiPerceptron:
 
-    def __init__(self, N, epochs=10, lr = 0.01) -> None:
-        self.W = np.random.randn(N)
+    def __init__(self, N, epochs=10, lr = 0.01, layers = [4,3,3,3]) -> None:
+        
+        self.W = []
+
+        for layer in layers[1:-1]:
+            self.W.append(np.random.randn(N))
+
         self.epochs = epochs
         self.learning_rate = lr
 
-    def forward(self, X):
+    def forward(self, X, F="sigmoid"):
         activation = np.dot(X, self.W)
-        return sigmoid_activation(activation)
+
+        activations = {
+            "sigmoid": sigmoid_activation,
+            "relu": relu_activation,
+            "softmax": softmax_activation
+        }
+        
+        if F not in activations:
+            raise ValueError(f"Unknown activation function, use: sigmoid, relu, softmax")
+        
+        return activations[F](activation)
     
     def fit(self, X, y):
-        for epoch in range(self.epochs):
-            for input, label in zip(X, y):
-                pred = self.forward(input)
-                error = label - pred
-                self.W += -self.learning_rate * error * input
+        pass
 
     def predict(self, X):
-        preds = []
-        for input in X:
-            pred = self.forward(input)
-            preds.append(threshold(pred))
-
-        return np.array(preds)
+        pass
