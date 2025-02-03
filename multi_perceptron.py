@@ -21,10 +21,12 @@ class MultiPerceptron:
     def __init__(self, layers, activation="relu", epochs=10, lr=0.01) -> None:
         self.W = []
         
+        # Weights initialization
         for i in np.arange(0, len(layers) - 2):
             w = np.random.randn(layers[i] + 1, layers[i + 1] + 1)
             self.W.append(w / np.sqrt(layers[i]))
 
+        # Output layer with no bias
         w = np.random.randn(layers[-2] + 1, layers[-1])
         self.W.append(w / np.sqrt(layers[-2]))
 
@@ -32,7 +34,7 @@ class MultiPerceptron:
         self.epochs = epochs
         self.learning_rate = lr
 
-        # activation functions and derivatives
+        # Activation functions and derivatives
         self.activation_name = activation
         self.activations = {
             "sigmoid": sigmoid_activation,
@@ -63,7 +65,7 @@ class MultiPerceptron:
             activation = np.dot(Ac[i], self.W[i])
             Ac.append(self.activations[self.activation_name](activation))
 
-        # output layer - softmax
+        # Output layer - softmax
         activation = np.dot(Ac[-1], self.W[-1])
         output = softmax_activation(activation)
         Ac.append(output)
@@ -71,7 +73,7 @@ class MultiPerceptron:
         error = Ac[-1] - y
 
         # Backpropagation
-        D = [error]  # Softmax + cross-entropy
+        D = [error]  
 
         for layer in range(len(Ac) - 2, 0, -1):
             delta = D[-1].dot(self.W[layer].T) * self.derivatives[self.activation_name](Ac[layer])
@@ -79,7 +81,7 @@ class MultiPerceptron:
 
         D = D[::-1]
 
-        # weight update
+        # Weight update
         for layer in range(len(self.W)):
             self.W[layer] -= self.learning_rate * Ac[layer].T.dot(D[layer])
 
@@ -88,6 +90,7 @@ class MultiPerceptron:
         return -np.sum(y * np.log(predictions + 1e-9)) / len(y)  # Cross-entropy loss
 
     def predict(self, X, bias=True):
+
         if bias:
             X = np.c_[X, np.ones((X.shape[0], 1))]
 
