@@ -9,17 +9,20 @@ data = pd.read_csv('Iris.csv')
 X = data.iloc[:, 1:-1]
 y = data.iloc[:, -1]
 
-# bias column
-bias_col = np.ones((X.shape[0], 1))
-X = np.hstack((X, bias_col))
-
+X = np.array(X)
 y = LabelEncoder().fit_transform(y)
+
+y = np.eye(3)[y]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
 
-P = MultiPerceptron(X_train.shape[1], lr=0.01, epochs=10)
-P.fit(X_train, y_train)
+MLP = MultiPerceptron([4,3,3], lr=0.01, epochs=1000)
+MLP.fit(X_train, y_train)
 
-predictions = P.predict(X_test)
-for pred, target in zip(predictions, y_test):
+predictions = MLP.predict(X_test)
+
+pred_labels = np.argmax(predictions, axis=1)
+true_labels = np.argmax(y_test, axis=1)
+
+for pred, target in zip(pred_labels, true_labels):
     print(f'Predicted: {pred}     Ground truth: {target}')
