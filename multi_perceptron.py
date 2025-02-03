@@ -3,6 +3,12 @@ import numpy as np
 def sigmoid_activation(X):
     return 1 / (1 + np.exp(-X))
 
+def relu_activation(X):
+    return np.maximum(0, X)
+
+def softmax_activation(X):
+    return np.exp(X) / np.sum(np.exp(X), axis=0)
+
 def threshold(X):
     return np.where(X >= 0.5, 1, 0)
 
